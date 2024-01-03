@@ -19,12 +19,12 @@ def set_random_word():
 
     return random_word
 
-def has_numbers(self, strng):
+def has_numbers(strng):
     ''' function to determine if input contains any numbers in string
     :return: True if numbers in string, else False '''
     return any(char.isdigit() for char in strng)
 
-def validate_input(self, strng):
+def validate_input(strng):
     ''' function for validating user input for guess variable
     :return: True if valid, else False '''
     #define special characters
@@ -36,7 +36,7 @@ def validate_input(self, strng):
     elif strng.isnumeric():
         print('Input cannot be numerical.')
     #check if input contains numbers
-    elif self.has_numbers(strng):
+    elif has_numbers(strng):
         print('Input may not contain numbers.')
     #check if input contains any special characters
     elif any(c in special_characters for c in strng):
@@ -47,7 +47,7 @@ def validate_input(self, strng):
     #invalid input, return false
     return False
 
-def play_again(self):
+def play_again():
     ''' method to handle if user wants to play the game again
     :return: True if yes, False if no'''
     while True:
@@ -64,6 +64,7 @@ def play_again(self):
         else:
             print('Error: Please enter y or n.')
 
+# menu option 1
 def new_game():
     ''' method to play new game of hangman '''
     # assign a random word from dictionary.txt to random_word variable
@@ -74,12 +75,14 @@ def new_game():
     letters_guessed = set()
     # user begins with 6 lives
     lives = 6
+    # var for user's guess
+    guess = ''
 
-    while lives > 0 and len(word_letters) > 0 and self.guess != random_word:
+    while lives > 0 and len(word_letters) > 0 and guess != random_word:
         #output lives left
         print(f'\nYou have {lives} lives left.')
         # output current score
-        print(f'Score: {s.get_score()}')
+        #print(f'Score: {get_score()}')
         #output letters guessed
         print('Guessed letters:', ','.join(letters_guessed))
 
@@ -94,57 +97,54 @@ def new_game():
         while True:
             try:
                 guess = input('\nGuess a letter or word: ').strip().lower()
-                # if input is valid
-                if self.validate_input(guess):
-                    # assign input to self.guess
-                    self.set_guess(guess)
-                    break
             except ValueError:
                 print('Invalid input')
                 continue
-
-        # if user guesses a single letter in the word
-        if len(self.guess) == 1:
-            # if letter has not been guessed previously
-            if self.guess not in letters_guessed:
-                # append letter to letters_guessed set
-                letters_guessed.add(self.guess)
-                # earn 10 points for correct guess
-                s.set_score('+', 10)
-                # if letter guessed correctly
-                if self.guess in word_letters:
-                    # remove - and replace with correct letter
-                    word_letters.remove(self.guess)
-                else:
-                    print('Incorrect guess.')
-                    # remove 1 life for incorrect guess
+            
+            # if input is valid
+            if validate_input(guess):
+                # if user guesses a single letter in the word
+                if len(guess) == 1:
+                    # if letter has not been guessed previously
+                    if guess not in letters_guessed:
+                        # append letter to letters_guessed set
+                        letters_guessed.add(guess)
+                        # earn 10 points for correct guess
+                        #set_score('+', 10)
+                        # if letter guessed correctly
+                        if guess in word_letters:
+                            # remove - and replace with correct letter
+                            word_letters.remove(guess)
+                        else:
+                            print('Incorrect guess.')
+                            # remove 1 life for incorrect guess
                     lives = lives - 1
                     # lose 10 points for incorrect guess
-                    s.set_score('-', 10)
-            # if letter has already been guessed
-            elif self.guess in letters_guessed:
-                print('\nYou have already guessed that letter. Please try again.')
-        # if user guesses entire word
-        if len(self.guess) > 1:
-            # if word guess is incorrect
-            if self.guess != random_word:
-                print('Incorrect guess.')
-                # remove 1 life for incorrect guess
-                lives = lives - 1
-                # lose 10 points for incorrect guess
-                s.set_score('-', 10)
-            elif self.guess == random_word:
-                s.set_score('+', 50)
+                    #set_score('-', 10)
+                    # if letter has already been guessed
+                    if guess in letters_guessed:
+                        print('\nYou have already guessed that letter. Please try again.')
+                # if user guesses entire word
+                if len(guess) > 1:
+                    # if word guess is incorrect
+                    if guess == random_word:
+                        #set_score('+', 50)
+                        print('Incorrect guess.')
+                    else:
+                        # remove 1 life for incorrect guess
+                        lives = lives - 1
+                        # lose 10 points for incorrect guess
+                        #set_score('-', 10)
 
     # if user is out of lives
     if lives == 0:
         # print word
         print(f'Sorry, you lose. The word was: {random_word}')
-        s.lose()
+        #lose()
     else:
         # print word
         print(f'You have correctly guessed: {random_word}')
-        s.win()
+        #win()
 
     # check if user wants to play again
     if play_again():
@@ -154,7 +154,7 @@ def new_game():
         # return to main menu
         menu()
 
-# menu option 3
+# menu option 4
 def display_rules():
     ''' Prints rules to user
     Obtained from https://en.wikipedia.org/wiki/Hangman_(game) '''
@@ -170,9 +170,9 @@ def display_rules():
     word is correct, 150 points are earned, the game is over and the guesser wins. Otherwise, a
     life is removed.
     '''
-    print('\n####################')
-    print('\nHow to Play:\n')
-    print('####################\n')
+    print('\n-------------------------------------------')
+    print('\nHow to Play: ')
+    print('\n-------------------------------------------')
     print(rules)
 
 # menu option 0
@@ -182,7 +182,6 @@ def exit_handler():
     print('Exiting program.')
     sys.exit()
 
-
 def menu_handler(choice):
     ''' function to handle menu option choice '''
     # create instance of class Hangman
@@ -191,7 +190,7 @@ def menu_handler(choice):
         new_game()
     elif choice == 2:
         # view scoreboard
-        #view_my_stats(s.set_initials())
+        #view_my_stats(set_initials())
         return
     elif choice == 3:
         # display leadrboard
@@ -210,8 +209,9 @@ def menu_handler(choice):
 def menu():
     ''' method to output menu options to user and accept user input '''
     # print welcome message
+    print('\n-------------------------------------------')
     print('\nWelcome to Hangman!')
-    print("-------------------------------------------")
+    print('\n-------------------------------------------')
 
     # loop to get user input
     while True:
