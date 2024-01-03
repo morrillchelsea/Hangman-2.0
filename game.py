@@ -7,8 +7,9 @@ def set_random_word():
     ''' read file from S3 bucket and output random word to be guessed 
     :return: random_word'''
     words = []
-    try:
-        with open ('hangman_dictionary.txt', 'r', encoding = 'utf-8') as file:
+    try:  
+        #with open ('hangman_dictionary.txt', 'r', encoding = 'utf-8') as file:
+        with open ('Untitled.txt', 'r', encoding = 'utf-8') as file:
             lines = file.read().splitlines()
             for word in lines:
                 words.append(word)
