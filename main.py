@@ -14,6 +14,6 @@ def main():
     # call menu function from Menu class
     menu()
 
-# Call main functionl
+# Call main function
 if __name__ == '__main__':
     main()

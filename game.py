@@ -4,7 +4,8 @@ import sys
 score = 0
 
 def set_random_word():
-    ''' read file from S3 bucket and output random word to be guessed '''
+    ''' read file from S3 bucket and output random word to be guessed 
+    :return: random_word'''
     words = []
     try:
         with open ('hangman_dictionary.txt', 'r', encoding = 'utf-8') as file:
@@ -46,6 +47,18 @@ def validate_input(strng):
         return True
     #invalid input, return false
     return False
+
+def get_guess():
+    while True:
+            try:
+                guess = input('\nGuess a letter or word: ').strip().lower()
+                break
+            except ValueError:
+                print('Invalid input')
+                continue
+    
+    if validate_input(guess):
+        return guess
 
 def play_again():
     ''' method to handle if user wants to play the game again
@@ -94,48 +107,45 @@ def new_game():
 
         print('\n', ' '.join(word_list))
 
-        while True:
-            try:
-                guess = input('\nGuess a letter or word: ').strip().lower()
-            except ValueError:
-                print('Invalid input')
-                continue
-            
-            # if input is valid
-            if validate_input(guess):
-                # if user guesses a single letter in the word
-                if len(guess) == 1:
-                    # if letter has not been guessed previously
-                    if guess not in letters_guessed:
-                        # append letter to letters_guessed set
-                        letters_guessed.add(guess)
-                        # earn 10 points for correct guess
-                        #set_score('+', 10)
-                        # if letter guessed correctly
-                        if guess in word_letters:
-                            # remove - and replace with correct letter
-                            word_letters.remove(guess)
-                        else:
-                            print('Incorrect guess.')
-                            # remove 1 life for incorrect guess
+        guess = get_guess()
+
+        # if user guesses a single letter in the word
+        if len(guess) == 1:
+            # if letter has not been guessed previously
+            if guess not in letters_guessed:
+                # append letter to letters_guessed set
+                letters_guessed.add(guess)
+
+                # earn 10 points for correct guess
+                #set_score('+', 10)
+
+                # if letter guessed correctly
+                if guess in word_letters:
+                    # remove - and replace with correct letter
+                    word_letters.remove(guess)
+                else:
+                    print('Incorrect guess.')
+                    # remove 1 life for incorrect guess
                     lives = lives - 1
                     # lose 10 points for incorrect guess
                     #set_score('-', 10)
-                    # if letter has already been guessed
-                    if guess in letters_guessed:
-                        print('\nYou have already guessed that letter. Please try again.')
-                # if user guesses entire word
-                if len(guess) > 1:
-                    # if word guess is incorrect
-                    if guess == random_word:
-                        #set_score('+', 50)
-                        print('Incorrect guess.')
-                    else:
-                        # remove 1 life for incorrect guess
-                        lives = lives - 1
-                        # lose 10 points for incorrect guess
-                        #set_score('-', 10)
-
+                # if letter has already been guessed
+            else:
+                print('\nYou have already guessed that letter. Please try again.')
+            # if user guesses entire word
+        elif len(guess) > 1:
+            # if word guess is incorrect
+            if guess == random_word:
+                #set_score('+', 50)
+                print('You win!')
+            else:
+                print('Incorrect guess.')
+                # remove 1 life for incorrect guess
+                lives = lives - 1
+                # lose 10 points for incorrect guess
+                #set_score('-', 10)
+    
+    # break out of while loop            
     # if user is out of lives
     if lives == 0:
         # print word
@@ -178,8 +188,10 @@ def display_rules():
 # menu option 0
 def exit_handler():
     '''Prints message thanking user for playing and exits program'''
+    print('\n-------------------------------------------')
     print('\nThank you for playing!')
     print('Exiting program.')
+    print('\n-------------------------------------------')
     sys.exit()
 
 def menu_handler(choice):
