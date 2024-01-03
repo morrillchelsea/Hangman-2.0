@@ -157,7 +157,7 @@ def new_game(self):
         m.menu()
 
 # menu option 3
-def display_rules(self):
+def display_rules():
     ''' Prints rules to user
     Obtained from https://en.wikipedia.org/wiki/Hangman_(game) '''
 
@@ -176,7 +176,7 @@ def display_rules(self):
     Otherwise, a life is removed.\n')
 
 # menu option 0
-def exit_handler(self):
+def exit_handler():
     '''Prints message thanking user for playing and exits program'''
     print('\nThank you for playing!')
     print('Exiting program.')
@@ -188,7 +188,8 @@ def menu_handler(choice):
     # create instance of class Hangman
     if choice == 1:
         # play game
-        new_game()
+        #new_game()
+        return
     elif choice == 2:
         # view scoreboard
         #view_my_stats(s.set_initials())
