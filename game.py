@@ -1,20 +1,23 @@
 import random
 import sys
 
-random_word = ''
 score = 0
 
 def set_random_word():
     ''' read file from S3 bucket and output random word to be guessed '''
+    words = []
     try:
         with open ('hangman_dictionary.txt', 'r', encoding = 'utf-8') as file:
-            contents = file.read()
-            words = list(map(str, contents.decode("utf-8").split()))
+            lines = file.read().splitlines()
+            for word in lines:
+                words.append(word)
     except IOError as err:
         print(err)
 
     # assign random string to variable
     random_word = random.choice(words)
+
+    return random_word
 
 def has_numbers(self, strng):
     ''' function to determine if input contains any numbers in string
@@ -61,15 +64,10 @@ def play_again(self):
         else:
             print('Error: Please enter y or n.')
 
-def new_game(self):
+def new_game():
     ''' method to play new game of hangman '''
-    # create instance of Menu class
-    m = Menu(None)
-    # instantiate Score class
-    s = Score(0)
     # assign a random word from dictionary.txt to random_word variable
-    self.set_word()
-    random_word = self.get_word()
+    random_word = set_random_word()
     # create a set of letters in random_word
     word_letters = set(random_word)
     # set of letters the user has previously guessed
@@ -149,31 +147,33 @@ def new_game(self):
         s.win()
 
     # check if user wants to play again
-    if self.play_again():
+    if play_again():
         # begin a new game
-        self.new_game()
+        new_game()
     else:
         # return to main menu
-        m.menu()
+        menu()
 
 # menu option 3
 def display_rules():
     ''' Prints rules to user
     Obtained from https://en.wikipedia.org/wiki/Hangman_(game) '''
-
+    rules = '''
+    The word to guess is represented by a row of dashes representing each letter of the word.
+    Proper nouns, such as names, places, brands, or slang are forbidden. If the guessing player 
+    suggests a letter which occurs in the word, the letter will appear in all of its correct
+    positions and 10 points are added to the score. If the suggested letter does not occur in the
+    word or the word is guessed incorrectly, a life is removed and 10 points are deducted from the
+    score. The game ends once the word is guessed, or if all of the lives are gone, signifying that
+    all guesses have been used. Winning by guessing each character individually earns the user 100
+    points. The player guessing the word may, at any time, attempt to guess the whole word. If the
+    word is correct, 150 points are earned, the game is over and the guesser wins. Otherwise, a
+    life is removed.
+    '''
+    print('\n####################')
     print('\nHow to Play:\n')
-    print('The word to guess is represented by a row of dashes representing each letter of the\
-    word. Proper nouns, such as names, places, brands, or slang are forbidden.\n')
-    print('If the guessing player suggests a letter which occurs in the word, the letter will\
-    appear in all of its correct positions and 10 points are added to the score.')
-    print('If the suggested letter does not occur in the word or the word is guessed\
-    incorrectly, a life is removed and 10 points are deducted from the score.\n')
-    print('The game ends once the word is guessed, or if all of the lives are gone —\
-    signifying that all guesses have been used.\n')
-    print('Winning by guessing each character individually earns the user 100 points.\n')
-    print('The player guessing the word may, at any time, attempt to guess the whole word.\
-    If the word is correct, 150 points are earned, the game is over and the guesser wins.\
-    Otherwise, a life is removed.\n')
+    print('####################\n')
+    print(rules)
 
 # menu option 0
 def exit_handler():
@@ -188,8 +188,7 @@ def menu_handler(choice):
     # create instance of class Hangman
     if choice == 1:
         # play game
-        #new_game()
-        return
+        new_game()
     elif choice == 2:
         # view scoreboard
         #view_my_stats(s.set_initials())
@@ -226,7 +225,7 @@ def menu():
 
         try:
             # get user input
-            choice = int(input("Menu option: "))
+            choice = int(input('Menu option: '))
             # if user input is valid
             if len(str(choice)) > 1:
                 print('Menu selection cannot contain more than one digit')

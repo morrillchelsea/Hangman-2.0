@@ -10,7 +10,7 @@ from game import menu
 def main():
     # call database.py method create_table() to create leaderboard with SQLite3
     #database.create_table()
-    
+
     # call menu function from Menu class
     menu()
 
