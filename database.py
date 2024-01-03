@@ -59,3 +59,59 @@ def add_score(initials, score):
             # close DB cursor
             cur.close()
             con.close()
+
+# menu option 2
+def view_my_scores(initials):
+    '''Method to display score data from scoreboard SQLite table associated with
+    provided initials'''
+
+    try:
+        con = sqlite3.connect(DB_NAME)
+        cur = con.cursor()
+
+        res = cur.execute('SELECT * FROM scoreboard WHERE initials=?', (initials,))
+        records = res.fetchall()
+        con.commit()
+
+        if len(records) > 0:
+            for initials, score, game_date in records:
+                print(f'Initials: {initials}, Date: {game_date}, Score: {score}')
+        else:
+            print('\n-------------------------------------------')
+            print('\nNo scoreboard data!')
+            print('\n-------------------------------------------')
+    except sqlite3.Error as err:
+        # log error
+        print(err)
+        #db_logger.error(err)
+    finally:
+        if con:
+            con.close()
+
+# menu option 3
+def view_top_scoreboard():
+    '''Method to output data from scoreboard SQLite table to console'''
+    try:
+        con = sqlite3.connect(DB_NAME)
+        cur = con.cursor()
+
+        sqlite_select_query = '''SELECT initials, score FROM scoreboard ORDER BY score ASC '''
+        cur.execute(sqlite_select_query)
+        records = cur.fetchall()
+
+        if len(records) > 0:
+            print('Initials:    Score: ')
+            for row in records:
+                print(row[0]. row[1])
+                print('\n')
+        else:
+            print('\n-------------------------------------------')
+            print('\nNo scoreboard data!')
+            print('\n-------------------------------------------')
+    except sqlite3.Error as err:
+        # log error
+        print(err)
+        #db_logger.error(err)
+    finally:
+        if con:
+            con.close()
