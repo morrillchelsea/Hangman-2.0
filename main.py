@@ -11,7 +11,7 @@ from database import create_table
 def main():
     # call database.py method create_table() to create leaderboard with SQLite3
     create_table()
-
+    print('\nWelcome to Hangman!')
     # call menu function from Menu class
     menu()
 

@@ -64,17 +64,19 @@ def add_score(initials, score):
 def view_my_scores(initials):
     '''Method to display score data from scoreboard SQLite table associated with
     provided initials'''
-
     try:
         con = sqlite3.connect(DB_NAME)
         cur = con.cursor()
 
-        res = cur.execute('SELECT * FROM scoreboard WHERE initials=?', (initials,))
+        res = cur.execute('SELECT score, game_date FROM scoreboard WHERE initials=?', (initials,))
         records = res.fetchall()
         con.commit()
 
         if len(records) > 0:
-            for initials, score, game_date in records:
+            print('\n-------------------------------------------')
+            print('\n My Scores')
+            print('\n-------------------------------------------')
+            for score, game_date in records:
                 print(f'Initials: {initials}, Date: {game_date}, Score: {score}')
         else:
             print('\n-------------------------------------------')
@@ -90,19 +92,22 @@ def view_my_scores(initials):
 
 # menu option 3
 def view_top_scoreboard():
-    '''Method to output data from scoreboard SQLite table to console'''
+    '''Method to output top 5 initials/scored from SQL db'''
     try:
         con = sqlite3.connect(DB_NAME)
         cur = con.cursor()
 
-        sqlite_select_query = '''SELECT initials, score FROM scoreboard ORDER BY score ASC '''
+        sqlite_select_query = '''SELECT initials, score FROM scoreboard ORDER BY score DESC limit 5 '''
         cur.execute(sqlite_select_query)
         records = cur.fetchall()
 
         if len(records) > 0:
-            print('Initials:    Score: ')
-            for row in records:
-                print(row[0]. row[1])
+            print('\n-------------------------------------------')
+            print('\n Leaderboard')
+            print('\n-------------------------------------------')
+            print('Initials: Score: ')
+            for initials, score in records:
+                print(f'{initials}        {score}')
                 print('\n')
         else:
             print('\n-------------------------------------------')

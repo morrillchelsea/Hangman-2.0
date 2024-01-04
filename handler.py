@@ -34,13 +34,13 @@ def set_initials():
     while True:
         try:
             initials = input("Enter initials: ").strip().upper()
+              # initials must be 3 char in length
+            if len(initials) == 3:
+                # validate input
+                if validate_input(initials):
+                    return initials
+            else:
+                print('Initials must be three characters.')
+                continue
         except ValueError:
             print('Invalid input.')
-        
-        # initials must be 3 char in length
-        if len(initials) > 3 or len(initials) < 3:
-            print('Initials must be three characters.')
-        else:
-            # validate input
-            if validate_input(initials):
-                return initials

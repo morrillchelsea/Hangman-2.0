@@ -1,6 +1,6 @@
 import random
 import sys
-from database import view_my_scores, view_top_scoreboard
+from database import view_my_scores, view_top_scoreboard, add_score
 from handler import validate_input, set_initials
 
 def play_again():
@@ -21,6 +21,8 @@ def play_again():
             print('Error: Please enter y or n.')
 
 def get_guess():
+    ''' Method to handle getting user guess input for gameplay
+    :return: guess'''
     while True:
             try:
                 guess = input('\nGuess a letter or word: ').strip().lower()
@@ -37,24 +39,25 @@ def add_leaderboard(score):
         try:
             #prompt user to search for additional course titles
             c = input('Add name to leaderboard? y = Yes n = No: ').strip().lower()
+            
+            if c == 'y':
+                initials = set_initials()
+                add_score(initials, score)
+                break
+            elif c == 'n':
+                break
+            else:
+                print('Error: Please enter y or n.')
         except ValueError:
             print('Invalid entry.')
-            continue
-        if c == 'y':
-            initials = set_initials()
-            add_score(initials, score)
-        elif c == 'n':
-            return False
-        else:
-            print('Error: Please enter y or n.')
 
 def set_random_word():
     ''' read file from S3 bucket and output random word to be guessed 
     :return: random_word'''
     words = []
     try:  
-        #with open ('hangman_dictionary.txt', 'r', encoding = 'utf-8') as file:
-        with open ('Untitled.txt', 'r', encoding = 'utf-8') as file:
+        with open ('hangman_dictionary.txt', 'r', encoding = 'utf-8') as file:
+        #with open ('Untitled.txt', 'r', encoding = 'utf-8') as file:
             lines = file.read().splitlines()
             for word in lines:
                 words.append(word)
@@ -118,27 +121,26 @@ def new_game():
                 # append letter to letters_guessed set
                 letters_guessed.add(guess)
 
-                # earn 10 points for correct guess
-                #set_score('+', 10)
-
                 # if letter guessed correctly
                 if guess in word_letters:
                     # remove - and replace with correct letter
                     word_letters.remove(guess)
+                    # earn 10 points for correct guess
+                    score = score + 10
                 else:
                     print('Incorrect guess.')
                     # remove 1 life for incorrect guess
                     lives = lives - 1
                     # lose 10 points for incorrect guess
-                    score = score + 10
-                # if letter has already been guessed
+                    score = score - 10
+            # else letter has already been guessed
             else:
                 print('\nYou have already guessed that letter. Please try again.')
-            # if user guesses entire word
+        # if user guesses entire word
         elif len(guess) > 1:
             # if word guess is incorrect
             if guess == random_word:
-                print('You win!')
+                break
             else:
                 print('Incorrect guess.')
                 # remove 1 life for incorrect guess
@@ -204,7 +206,6 @@ def menu_handler(choice):
     elif choice == 2:
         # view scoreboard
         view_my_scores(set_initials())
-        return
     elif choice == 3:
         # display leadrboard
         view_top_scoreboard()
@@ -216,13 +217,13 @@ def menu_handler(choice):
         exit_handler()
     else:
         # choice not acceptable menu option
-        print('Invalid selection')
+        print('\nInvalid selection')
 
 def menu():
     ''' method to output menu options to user and accept user input '''
     # print welcome message
     print('\n-------------------------------------------')
-    print('\nWelcome to Hangman!')
+    print('\nMain Menu')
     print('\n-------------------------------------------')
 
     # loop to get user input
