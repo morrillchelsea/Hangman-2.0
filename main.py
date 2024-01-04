@@ -5,7 +5,7 @@ Prof Craig Poma
 Last Modified: 3 Jan 2024
 
 '''
-from gamehelper import menu
+from hangman import menu
 from database import create_table
 
 def main():

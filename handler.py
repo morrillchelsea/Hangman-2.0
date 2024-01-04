@@ -1,22 +1,5 @@
 ''' Module with functions that handle/validate user input '''
 
-def play_again():
-    ''' method to handle if user wants to play the game again
-    :return: True if yes, False if no'''
-    while True:
-        try:
-            #prompt user to search for additional course titles
-            c = input('Play again? y = Yes n = No (Return to Main Menu): ').strip().lower()
-        except ValueError:
-            print('Invalid entry.')
-            continue
-        if c == 'y':
-            return True
-        elif c == 'n':
-            return False
-        else:
-            print('Error: Please enter y or n.')
-
 def has_numbers(strng):
     ''' function to determine if input contains any numbers in string
     :return: True if numbers in string, else False '''
@@ -61,16 +44,3 @@ def set_initials():
             # validate input
             if validate_input(initials):
                 return initials
-            
-def get_guess():
-    while True:
-            try:
-                guess = input('\nGuess a letter or word: ').strip().lower()
-                break
-            except ValueError:
-                print('Invalid input')
-                continue
-    
-    if validate_input(guess):
-        return guess
-
